@@ -14,13 +14,13 @@ def check_file(file):
         try:
             vector = iface.addVectorLayer(os.path.join(filepath, filename), "new", "ogr")
             return vector
-        except:
+        except ValueError:
             print("Sth is wrong with value")
     elif extension == ".tif":
         try:
             raster = iface.addRasterLayer(file)
             return raster
-        except:
+        except ValueError:
             print("Sth is wrong with value")
     else:
         print("Sth is wrong with value")
@@ -51,8 +51,7 @@ def safe(raster, path):
 
 safe(raster, 'C:/Users/misie/Desktop/file1.txt')
 
-
-# zad3
+zad3
 
 
 class Builings:
@@ -69,9 +68,44 @@ class Builings:
         self.spot = spot
         self.filepath = filepath
         self.value = value
+        self.project()
+        self.load()
+        self.count()
 
     def __str__(self):
         return self.name
+
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    def spot(self):
+        return self.__spot
+
+    @property
+    def filepath(self):
+        return self.__filepath
+
+    @property
+    def value(self):
+        return self.__value
+
+    @name.setter
+    def name(self, name):
+        self.__name = name
+
+    @spot.setter
+    def spot(self, spot):
+        self.__spot = spot
+
+    @filepath.setter
+    def filepath(self, filepath):
+        self.__filepath = filepath
+
+    @value.setter
+    def value(self, value):
+        self.__value = value
 
     def project(self):
         projekt = QgsProject.instance()
@@ -93,21 +127,27 @@ class Builings:
         Funkcja ma na celu obliczenie powierzchni dla kolumny 'building'  dla szukanego obiektu "value"
         iteracja po wszystkich obiektach w celu spełnienia warunku
         """
-        warstwa = iface.activeLayer()
+        warstwa = self.load()
+        #        warstwa = iface.activeLayer()
         pr = warstwa.dataProvider()
         pr.addAttributes([QgsField('Nowa', QVariant.Double)])
         warstwa.updateFields()
+        sum = 0
+        #        próbba printu sumy
         with edit(warstwa):
-            for obiekt in warstwa.getFeatures():
-                if obiekt['building'] == '{self.value}':
-                    obiekt.setAttribute(obiekt.fieldNameIndex('Nowa'), obiekt.geometry().area())
-                warstwa.updateFeature(obiekt)
+            for obiekt in warstwa.getFeatures(QgsFeatureRequest(QgsExpression(f"\"building\"= '{self.value}' "))):
+                sum += obiekt.geometry().area()
+            print(sum)
 
 
+#            for obiekt in warstwa.getFeatures():
+#                if obiekt['building'] == '{self.value}':
+#                    obiekt.setAttribute(obiekt.fieldNameIndex('Nowa'), obiekt.geometry().area())
+#                sum += obiekt.geometry().area()
+#                warstwa.updateFeature(obiekt)
+#        print(sum)
+#
 new = Builings(name='Projekt', spot='C:/Users/misie/Desktop/', filepath='C:/Users/misie/Downloads/',
                value='residential')
-new.project()
-new.load()
-new.count()
 
 # praca wykonana przez Michał Lasia @115485
