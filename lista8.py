@@ -5,10 +5,11 @@ warstwa = iface.activeLayer()
 features = [i for i in warstwa.getFeatures()]
 
 for i in range(len(features)):
-   type = QgsWkbTypes.displayString(features[i].geometry().wkbType())
+    type = QgsWkbTypes.displayString(features[i].geometry().wkbType())
 print(type)
 
 
+# zad2
 class Building_select:
     def __init__(self, file, changeX, changeY, pick):
         self.file = file
@@ -16,6 +17,7 @@ class Building_select:
         self.changeY = changeY
         self.pick = pick
         self.shift()
+
     def add(self):
         """
         Funkcja przyjmuje plik, w zaleĹĽnoĹ›ci od rozszerzenia zapisuje jako warste VectorowÄ… lub RastrtowÄ…
@@ -60,14 +62,12 @@ class Building_select:
 
         nowe = []
         old_geom = [x.geometry().asMultiPolygon() for x in features]
-       
-   
-       
-        for i in range(len(old_geom) -1):
+
+        for i in range(len(old_geom) - 1):
             for pt in old_geom[i][0]:
                 new_pt = [pt[j] + QgsVector(self.changeX, self.changeY) for j in range(len(pt))]
                 nowe.append(new_pt)
-        
+
         for j in range(len(nowe)):
             bufor = QgsFeature(j)
             bufor.setGeometry(QgsGeometry.fromPolygonXY([nowe[j]]))
