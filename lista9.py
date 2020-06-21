@@ -50,22 +50,24 @@ class Bird:
 
     def load(self):
         """
-        Funkcja ładuje nową warstwe z ścieżki podaje i szuka pliku 'Lista_warstwa.shp'
+        Funkcja ładuje nową warstwe z ścieżki podaje i szuka pliku 'Lista9_warstwa.shp'
         :return: zwraca vector
         """
-        vector = iface.addVectorLayer(os.path.join(self.filepath, 'Lista9_warstwa.shp'), "budynki", "ogr")
+        vector = iface.addVectorLayer(os.path.join(self.filepath, 'Lista9_warstwa.shp'), "ptaki", "ogr")
         return vector
 
     def count(self):
         """
-        Funkcja ma na celu obliczenie powierzchni dla kolumny 'building'  dla szukanego obiektu "value"
-        iteracja po wszystkich obiektach w celu spełnienia warunku
+        Funkcja ma na celu obliczenie prawdopodobieństwa wystąpenia w danej lokalizacji. Do obliczeń użyto kolumny NUMPOINTS"
+        iteracja po wszystkich obiektach
         """
         warstwa = self.load()
         #        warstwa = iface.activeLayer()
         pr = warstwa.dataProvider()
+
         sumaP = sum(filter(None, [f['NUMPOINTS'] for f in qgis.utils.iface.activeLayer().getFeatures()]))
         print('.\n..\n...\n zaktualizowano')
+
         pr.addAttributes([QgsField('P', QVariant.Double)])
         warstwa.updateFields()
         #        próbba printu sumy
